@@ -1,7 +1,8 @@
 [workspace]
 resolver = "3"
 members = [
-    "compiler",
+  "bytecode",
+  "compiler",
 ]
 
 [workspace.dependencies]
