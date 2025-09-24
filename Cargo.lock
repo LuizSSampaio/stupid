@@ -20,6 +20,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "error-handler"
+version = "0.1.0"
+
+[[package]]
 name = "vm"
 version = "0.1.0"
 dependencies = [
