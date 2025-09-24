@@ -24,6 +24,17 @@ impl VM {
         {
             match instruction {
                 OpCode::Return => break,
+                OpCode::Constant(index) => {
+                    if let Some(constant) = self
+                        .chunk
+                        .as_ref()
+                        .and_then(|chunk| chunk.get_constant(index))
+                    {
+                        println!("Pushing constant: {:?}", constant);
+                    } else {
+                        println!("Invalid constant index: {}", index);
+                    }
+                }
                 _ => {
                     println!("Executing instruction: {:?}", instruction);
                 }
