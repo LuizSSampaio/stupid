@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = [ "bytecode", "compiler", "error-handler", "vm" ]
+members = [ "bytecode", "compiler", "vm" ]
 
 [workspace.dependencies]
 anyhow = "1.0.100"
