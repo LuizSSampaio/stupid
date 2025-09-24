@@ -6,3 +6,4 @@ edition = "2024"
 [dependencies]
 bytecode = { path = "../bytecode" }
 anyhow = { workspace = true }
+thiserror = { workspace = true }
