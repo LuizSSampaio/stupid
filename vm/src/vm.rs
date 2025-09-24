@@ -1,6 +1,7 @@
 use bytecode::{chunk::Chunk, opcode::OpCode};
 
 use anyhow::Result;
+use thiserror::Error;
 
 #[derive(Debug, Default, Clone, PartialEq, PartialOrd)]
 pub struct VM {
@@ -36,7 +37,7 @@ impl VM {
                     }
                 }
                 _ => {
-                    println!("Executing instruction: {:?}", instruction);
+                    return Err(VMError::InvalidInstruction(instruction).into());
                 }
             }
 
@@ -45,4 +46,10 @@ impl VM {
 
         Ok(())
     }
+}
+
+#[derive(Error, Debug)]
+pub enum VMError {
+    #[error("Invalid instruction: {0:?}")]
+    InvalidInstruction(OpCode),
 }
