@@ -1,4 +1,4 @@
-use bytecode::{chunk::Chunk, opcode::OpCode};
+use bytecode::{chunk::Chunk, opcode::OpCode, value::Value};
 
 use anyhow::Result;
 use thiserror::Error;
@@ -7,12 +7,15 @@ use thiserror::Error;
 pub struct VM {
     chunk: Option<Chunk>,
     counter: usize,
+
+    stack: Vec<Value>,
 }
 
 impl VM {
     pub fn insterpret(&mut self, chunk: Chunk) -> Result<()> {
         self.chunk = Some(chunk);
         self.counter = 0;
+        self.stack = Vec::new();
 
         Ok(())
     }
