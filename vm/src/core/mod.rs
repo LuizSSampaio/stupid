@@ -7,6 +7,8 @@ use bytecode::{
 use anyhow::Result;
 use thiserror::Error;
 
+mod unary;
+
 #[derive(Debug, Default, Clone, PartialEq, PartialOrd)]
 pub struct Core {
     chunk: Option<Chunk>,
@@ -43,18 +45,7 @@ impl Core {
                         return Err(CoreError::StackOverflow(instruction).into());
                     }
                 }
-                OpCode::Negate => {
-                    if let Some(value) = self.stack.pop() {
-                        match value {
-                            Value::Number(n) => self.stack.push(Value::Number(-n)),
-                            _ => {
-                                return Err(VMError::UnexpectedType(value.into()).into());
-                            }
-                        }
-                    } else {
-                        return Err(VMError::StackOverflow(instruction).into());
-                    }
-                }
+                OpCode::Unary(unary) => self.unary(unary)?,
                 _ => {
                     return Err(CoreError::InvalidInstruction(instruction).into());
                 }
