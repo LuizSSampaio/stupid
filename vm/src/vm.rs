@@ -34,7 +34,7 @@ impl VM {
                         .as_ref()
                         .and_then(|chunk| chunk.get_constant(index))
                     {
-                        println!("Pushing constant: {:?}", constant);
+                        self.stack.push(constant);
                     } else {
                         println!("Invalid constant index: {}", index);
                     }
