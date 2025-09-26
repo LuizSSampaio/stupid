@@ -1,5 +1,6 @@
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum OpCode {
     Constant(usize),
+    Negate,
     Return,
 }
