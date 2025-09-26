@@ -1,4 +1,8 @@
-use bytecode::{chunk::Chunk, opcode::OpCode, value::Value};
+use bytecode::{
+    chunk::Chunk,
+    opcode::OpCode,
+    value::{Value, ValueType},
+};
 
 use anyhow::Result;
 use thiserror::Error;
@@ -36,7 +40,7 @@ impl VM {
                     {
                         self.stack.push(constant);
                     } else {
-                        println!("Invalid constant index: {}", index);
+                        return Err(VMError::StackOverflow(instruction).into());
                     }
                 }
                 _ => {
@@ -55,4 +59,8 @@ impl VM {
 pub enum VMError {
     #[error("Invalid instruction: {0:?}")]
     InvalidInstruction(OpCode),
+    #[error("Unexpected type: {0}")]
+    UnexpectedType(ValueType),
+    #[error("Stack overflow: {0:?}")]
+    StackOverflow(OpCode),
 }
