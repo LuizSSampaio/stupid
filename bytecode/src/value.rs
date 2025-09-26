@@ -7,6 +7,17 @@ pub enum Value {
     Nil,
 }
 
+impl Display for Value {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Value::Number(n) => write!(f, "{}", n),
+            Value::Bool(b) => write!(f, "{}", b),
+            Value::Nil => write!(f, "nil"),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub enum ValueType {
     Number,
     Bool,
@@ -23,12 +34,12 @@ impl From<Value> for ValueType {
     }
 }
 
-impl Display for Value {
+impl Display for ValueType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Value::Number(n) => write!(f, "{}", n),
-            Value::Bool(b) => write!(f, "{}", b),
-            Value::Nil => write!(f, "nil"),
+            ValueType::Number => write!(f, "Number"),
+            ValueType::Bool => write!(f, "Bool"),
+            ValueType::Nil => write!(f, "Nil"),
         }
     }
 }
