@@ -9,6 +9,7 @@ use thiserror::Error;
 
 use crate::memory::stack::Stack;
 
+mod binary;
 mod unary;
 
 #[derive(Debug, Default, Clone, PartialEq, PartialOrd)]
@@ -48,6 +49,7 @@ impl Core {
                     }
                 }
                 OpCode::Unary(unary) => self.unary(unary)?,
+                OpCode::Binary(binary) => self.binary(binary)?,
                 _ => {
                     return Err(CoreError::InvalidInstruction(instruction).into());
                 }
