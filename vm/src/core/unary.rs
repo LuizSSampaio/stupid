@@ -12,17 +12,13 @@ impl Core {
     }
 
     fn negate(&mut self) -> Result<()> {
-        if let Some(value) = self.stack.pop() {
-            match value {
-                Value::Number(n) => {
-                    self.stack.push(Value::Number(-n));
-                    return Ok(());
-                }
-                _ => {
-                    return Err(CoreError::UnexpectedType(value.into()).into());
-                }
+        let value = self.stack.pop()?;
+        match value {
+            Value::Number(n) => {
+                self.stack.push(Value::Number(-n));
+                Ok(())
             }
+            _ => Err(CoreError::UnexpectedType(value.into()).into()),
         }
-        Err(CoreError::StackOverflow(Unary::Negate.into()).into())
     }
 }

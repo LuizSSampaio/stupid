@@ -7,6 +7,8 @@ use bytecode::{
 use anyhow::Result;
 use thiserror::Error;
 
+use crate::memory::stack::Stack;
+
 mod unary;
 
 #[derive(Debug, Default, Clone, PartialEq, PartialOrd)]
@@ -14,14 +16,14 @@ pub struct Core {
     chunk: Option<Chunk>,
     counter: usize,
 
-    stack: Vec<Value>,
+    stack: Stack<Value>,
 }
 
 impl Core {
     pub fn insterpret(&mut self, chunk: Chunk) -> Result<()> {
         self.chunk = Some(chunk);
         self.counter = 0;
-        self.stack = Vec::new();
+        self.stack = Stack::new();
 
         Ok(())
     }
