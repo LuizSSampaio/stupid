@@ -43,6 +43,18 @@ impl VM {
                         return Err(VMError::StackOverflow(instruction).into());
                     }
                 }
+                OpCode::Negate => {
+                    if let Some(value) = self.stack.pop() {
+                        match value {
+                            Value::Number(n) => self.stack.push(Value::Number(-n)),
+                            _ => {
+                                return Err(VMError::UnexpectedType(value.into()).into());
+                            }
+                        }
+                    } else {
+                        return Err(VMError::StackOverflow(instruction).into());
+                    }
+                }
                 _ => {
                     return Err(VMError::InvalidInstruction(instruction).into());
                 }
