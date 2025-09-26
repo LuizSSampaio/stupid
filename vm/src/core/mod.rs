@@ -8,14 +8,14 @@ use anyhow::Result;
 use thiserror::Error;
 
 #[derive(Debug, Default, Clone, PartialEq, PartialOrd)]
-pub struct VM {
+pub struct Core {
     chunk: Option<Chunk>,
     counter: usize,
 
     stack: Vec<Value>,
 }
 
-impl VM {
+impl Core {
     pub fn insterpret(&mut self, chunk: Chunk) -> Result<()> {
         self.chunk = Some(chunk);
         self.counter = 0;
@@ -40,7 +40,7 @@ impl VM {
                     {
                         self.stack.push(constant);
                     } else {
-                        return Err(VMError::StackOverflow(instruction).into());
+                        return Err(CoreError::StackOverflow(instruction).into());
                     }
                 }
                 OpCode::Negate => {
@@ -56,7 +56,7 @@ impl VM {
                     }
                 }
                 _ => {
-                    return Err(VMError::InvalidInstruction(instruction).into());
+                    return Err(CoreError::InvalidInstruction(instruction).into());
                 }
             }
 
@@ -68,7 +68,7 @@ impl VM {
 }
 
 #[derive(Error, Debug)]
-pub enum VMError {
+pub enum CoreError {
     #[error("Invalid instruction: {0:?}")]
     InvalidInstruction(OpCode),
     #[error("Unexpected type: {0}")]
