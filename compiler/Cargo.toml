@@ -5,3 +5,5 @@ edition = "2024"
 
 [dependencies]
 bytecode = { path = "../bytecode" }
+clap = { workspace = true }
+anyhow = { workspace = true }
