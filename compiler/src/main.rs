@@ -2,6 +2,8 @@ use std::{fs::File, io::Read, path::PathBuf};
 
 use clap::Parser;
 
+use crate::scanner::Scanner;
+
 mod scanner;
 
 #[derive(Debug, Parser)]
@@ -38,5 +40,7 @@ fn run(path: PathBuf) {
 }
 
 fn compile(source: String) -> anyhow::Result<()> {
+    let scanner = Scanner::new(source);
+
     Ok(())
 }
