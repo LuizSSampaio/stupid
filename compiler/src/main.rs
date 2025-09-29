@@ -2,6 +2,8 @@ use std::{fs::File, io::Read, path::PathBuf};
 
 use clap::Parser;
 
+mod scanner;
+
 #[derive(Debug, Parser)]
 #[command(version, about = "A stupid language compiler", long_about = None)]
 struct Args {
