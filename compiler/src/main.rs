@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::{fs::File, io::Read, path::PathBuf};
 
 use clap::Parser;
 
@@ -13,4 +13,19 @@ fn main() {
     let args = Args::parse();
 
     println!("{}", args.file.display());
+}
+
+fn run(path: PathBuf) {
+    let display = path.display();
+
+    let mut file = match File::open(&path) {
+        Ok(file) => file,
+        Err(why) => panic!("couldn't open {}: {}", display, why),
+    };
+
+    let mut content = String::new();
+    match file.read_to_string(&mut content) {
+        Ok(_) => {}
+        Err(why) => panic!("couldn't read {}: {}", display, why),
+    }
 }
