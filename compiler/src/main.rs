@@ -28,4 +28,13 @@ fn run(path: PathBuf) {
         Ok(_) => {}
         Err(why) => panic!("couldn't read {}: {}", display, why),
     }
+
+    match compile(content) {
+        Ok(_) => {}
+        Err(why) => panic!("couldn't compile {}: {}", display, why),
+    }
+}
+
+fn compile(source: String) -> anyhow::Result<()> {
+    Ok(())
 }
