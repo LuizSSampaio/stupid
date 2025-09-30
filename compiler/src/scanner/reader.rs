@@ -24,6 +24,14 @@ impl Reader {
         self.source.get(self.current).copied().unwrap_or('\0')
     }
 
+    pub fn lexeme(&self) -> String {
+        self.source
+            .iter()
+            .skip(self.start)
+            .take(self.current - self.start)
+            .collect()
+    }
+
     pub fn is_at_end(&self) -> bool {
         self.current >= self.source.len()
     }

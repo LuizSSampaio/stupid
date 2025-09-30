@@ -35,12 +35,7 @@ impl Scanner {
         self.reader.start_to_current();
 
         if self.reader.is_at_end() {
-            return Ok(Token {
-                token_type: token::TokenType::Eof,
-                lexeme: "".to_string(),
-                row: self.reader.row(),
-                column: self.reader.column(),
-            });
+            return Ok(self.make_token(token::TokenType::Eof));
         }
 
         Err(ScanError::UnexpectedCharacter(
@@ -48,6 +43,15 @@ impl Scanner {
             self.reader.row(),
             self.reader.column(),
         ))
+    }
+
+    fn make_token(&self, token_type: token::TokenType) -> Token {
+        Token {
+            token_type,
+            lexeme: self.reader.lexeme(),
+            row: self.reader.row(),
+            column: self.reader.column(),
+        }
     }
 }
 
