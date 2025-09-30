@@ -38,6 +38,15 @@ impl Reader {
         }
     }
 
+    pub fn next_is(&mut self, expected: char) -> bool {
+        if self.peek() == expected {
+            let _ = self.advance();
+            true
+        } else {
+            false
+        }
+    }
+
     pub fn peek(&self) -> char {
         self.source.get(self.current).copied().unwrap_or('\0')
     }
