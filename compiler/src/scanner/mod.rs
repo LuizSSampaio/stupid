@@ -103,12 +103,30 @@ impl Scanner {
                     Ok(self.make_token(TokenType::Slash))
                 }
             }
+            '"' => self.string(),
             _ => Err(ScanError::UnexpectedCharacter(
                 self.reader.peek(),
                 self.reader.row(),
                 self.reader.column(),
             )),
         }
+    }
+
+    fn string(&mut self) -> Result<Token, ScanError> {
+        while self.reader.peek() != '"' && !self.reader.is_at_end() {
+            let _ = self.reader.advance();
+        }
+
+        if self.reader.is_at_end() {
+            return Err(ScanError::UnterminatedString(
+                self.reader.row(),
+                self.reader.column(),
+            ));
+        }
+
+        // The closing ".
+        let _ = self.reader.advance();
+        Ok(self.make_token(TokenType::String))
     }
 
     fn skip_whitespace(&mut self) {
@@ -137,4 +155,6 @@ impl Scanner {
 pub enum ScanError {
     #[error("Unexpected character '{0}' at {1}:{2}")]
     UnexpectedCharacter(char, usize, usize),
+    #[error("Unterminated string at {0}:{1}")]
+    UnterminatedString(usize, usize),
 }
