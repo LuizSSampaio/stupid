@@ -1,3 +1,5 @@
+use thiserror::Error;
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Reader {
     source: Vec<char>,
@@ -17,6 +19,22 @@ impl Reader {
             current: 0,
             row: 1,
             column: 1,
+        }
+    }
+
+    pub fn advance(&mut self) -> Result<char, ReaderError> {
+        match self.source.get(self.current) {
+            Some(&c) => {
+                self.current += 1;
+                self.column += 1;
+
+                if c == '\n' {
+                    self.row += 1;
+                    self.column = 1;
+                }
+                Ok(c)
+            }
+            None => Err(ReaderError::UnexpectedEndOfFile),
         }
     }
 
@@ -47,4 +65,10 @@ impl Reader {
     pub fn column(&self) -> usize {
         self.column
     }
+}
+
+#[derive(Debug, Error, Clone, PartialEq, Eq)]
+pub enum ReaderError {
+    #[error("Unexpected end of file")]
+    UnexpectedEndOfFile,
 }
