@@ -28,6 +28,10 @@ impl Reader {
         self.current >= self.source.len()
     }
 
+    pub fn start_to_current(&mut self) {
+        self.start = self.current;
+    }
+
     pub fn row(&self) -> usize {
         self.row
     }
