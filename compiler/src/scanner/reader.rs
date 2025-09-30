@@ -20,6 +20,10 @@ impl Reader {
         }
     }
 
+    pub fn peek(&self) -> char {
+        self.source.get(self.current).copied().unwrap_or('\0')
+    }
+
     pub fn is_at_end(&self) -> bool {
         self.current >= self.source.len()
     }
