@@ -35,6 +35,7 @@ impl Scanner {
     }
 
     fn scan_token(&mut self) -> Result<Token, ScanError> {
+        self.skip_whitespace();
         self.reader.start_to_current();
 
         let c = match self.reader.advance() {
@@ -87,6 +88,18 @@ impl Scanner {
                 self.reader.row(),
                 self.reader.column(),
             )),
+        }
+    }
+
+    fn skip_whitespace(&mut self) {
+        loop {
+            let c = self.reader.peek();
+            match c {
+                ' ' | '\t' | '\r' | '\n' => {
+                    let _ = self.reader.advance();
+                }
+                _ => break,
+            }
         }
     }
 
