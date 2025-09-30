@@ -19,4 +19,16 @@ impl Reader {
             column: 1,
         }
     }
+
+    pub fn is_at_end(&self) -> bool {
+        self.current >= self.source.len()
+    }
+
+    pub fn row(&self) -> usize {
+        self.row
+    }
+
+    pub fn column(&self) -> usize {
+        self.column
+    }
 }
