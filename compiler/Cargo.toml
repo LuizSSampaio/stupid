@@ -7,3 +7,4 @@ edition = "2024"
 bytecode = { path = "../bytecode" }
 clap = { workspace = true }
 anyhow = { workspace = true }
+thiserror = { workspace = true }
