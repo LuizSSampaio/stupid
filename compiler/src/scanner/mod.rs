@@ -1,6 +1,7 @@
 use crate::scanner::reader::Reader;
 
 mod reader;
+mod token;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Scanner {
