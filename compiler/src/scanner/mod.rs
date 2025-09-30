@@ -1,6 +1,9 @@
 use thiserror::Error;
 
-use crate::scanner::{reader::Reader, token::Token};
+use crate::scanner::{
+    reader::Reader,
+    token::{Token, TokenType},
+};
 
 mod reader;
 mod token;
@@ -23,7 +26,7 @@ impl Scanner {
         loop {
             let token = self.scan_token()?;
             tokens.push(token.clone());
-            if token.token_type == token::TokenType::Eof {
+            if token.token_type == TokenType::Eof {
                 break;
             }
         }
@@ -34,18 +37,32 @@ impl Scanner {
     fn scan_token(&mut self) -> Result<Token, ScanError> {
         self.reader.start_to_current();
 
-        if self.reader.is_at_end() {
-            return Ok(self.make_token(token::TokenType::Eof));
-        }
+        let c = match self.reader.advance() {
+            Ok(c) => c,
+            Err(_) => return Ok(self.make_token(TokenType::Eof)),
+        };
 
-        Err(ScanError::UnexpectedCharacter(
-            self.reader.peek(),
-            self.reader.row(),
-            self.reader.column(),
-        ))
+        match c {
+            '(' => Ok(self.make_token(TokenType::LeftParen)),
+            ')' => Ok(self.make_token(TokenType::RightParen)),
+            '{' => Ok(self.make_token(TokenType::LeftBrace)),
+            '}' => Ok(self.make_token(TokenType::RightBrace)),
+            ';' => Ok(self.make_token(TokenType::Semicolon)),
+            ',' => Ok(self.make_token(TokenType::Comma)),
+            '.' => Ok(self.make_token(TokenType::Dot)),
+            '-' => Ok(self.make_token(TokenType::Minus)),
+            '+' => Ok(self.make_token(TokenType::Plus)),
+            '/' => Ok(self.make_token(TokenType::Slash)),
+            '*' => Ok(self.make_token(TokenType::Star)),
+            _ => Err(ScanError::UnexpectedCharacter(
+                self.reader.peek(),
+                self.reader.row(),
+                self.reader.column(),
+            )),
+        }
     }
 
-    fn make_token(&self, token_type: token::TokenType) -> Token {
+    fn make_token(&self, token_type: TokenType) -> Token {
         Token {
             token_type,
             lexeme: self.reader.lexeme(),
