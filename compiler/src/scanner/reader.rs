@@ -51,6 +51,10 @@ impl Reader {
         self.source.get(self.current).copied().unwrap_or('\0')
     }
 
+    pub fn peek_next(&self) -> char {
+        self.source.get(self.current + 1).copied().unwrap_or('\0')
+    }
+
     pub fn lexeme(&self) -> String {
         self.source
             .iter()
