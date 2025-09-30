@@ -54,6 +54,34 @@ impl Scanner {
             '+' => Ok(self.make_token(TokenType::Plus)),
             '/' => Ok(self.make_token(TokenType::Slash)),
             '*' => Ok(self.make_token(TokenType::Star)),
+            '!' => {
+                if self.reader.next_is('=') {
+                    Ok(self.make_token(TokenType::BangEqual))
+                } else {
+                    Ok(self.make_token(TokenType::Bang))
+                }
+            }
+            '=' => {
+                if self.reader.next_is('=') {
+                    Ok(self.make_token(TokenType::EqualEqual))
+                } else {
+                    Ok(self.make_token(TokenType::Equal))
+                }
+            }
+            '<' => {
+                if self.reader.next_is('=') {
+                    Ok(self.make_token(TokenType::LessEqual))
+                } else {
+                    Ok(self.make_token(TokenType::Less))
+                }
+            }
+            '>' => {
+                if self.reader.next_is('=') {
+                    Ok(self.make_token(TokenType::GreaterEqual))
+                } else {
+                    Ok(self.make_token(TokenType::Greater))
+                }
+            }
             _ => Err(ScanError::UnexpectedCharacter(
                 self.reader.peek(),
                 self.reader.row(),
