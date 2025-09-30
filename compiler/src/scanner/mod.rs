@@ -53,7 +53,6 @@ impl Scanner {
             '.' => Ok(self.make_token(TokenType::Dot)),
             '-' => Ok(self.make_token(TokenType::Minus)),
             '+' => Ok(self.make_token(TokenType::Plus)),
-            '/' => Ok(self.make_token(TokenType::Slash)),
             '*' => Ok(self.make_token(TokenType::Star)),
             '!' => {
                 if self.reader.next_is('=') {
@@ -81,6 +80,27 @@ impl Scanner {
                     Ok(self.make_token(TokenType::GreaterEqual))
                 } else {
                     Ok(self.make_token(TokenType::Greater))
+                }
+            }
+            '/' => {
+                if self.reader.next_is('/') {
+                    while self.reader.peek() != '\n' && !self.reader.is_at_end() {
+                        let _ = self.reader.advance();
+                    }
+                    self.scan_token()
+                } else if self.reader.next_is('*') {
+                    while !self.reader.is_at_end() {
+                        if self.reader.peek() == '*' && self.reader.peek_next() == '/' {
+                            let _ = self.reader.advance(); // consume '*'
+                            let _ = self.reader.advance(); // consume '/'
+                            break;
+                        } else {
+                            let _ = self.reader.advance();
+                        }
+                    }
+                    self.scan_token()
+                } else {
+                    Ok(self.make_token(TokenType::Slash))
                 }
             }
             _ => Err(ScanError::UnexpectedCharacter(
