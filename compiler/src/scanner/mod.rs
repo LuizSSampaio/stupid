@@ -105,6 +105,7 @@ impl Scanner {
             }
             '"' => self.string(),
             '0'..='9' => Ok(self.number()),
+            'a'..='z' | 'A'..='Z' | '_' => Ok(self.identifier()),
             _ => Err(ScanError::UnexpectedCharacter(
                 self.reader.peek(),
                 self.reader.row(),
@@ -144,6 +145,17 @@ impl Scanner {
         }
 
         self.make_token(TokenType::Number)
+    }
+
+    fn identifier(&mut self) -> Token {
+        while self.reader.peek().is_ascii_alphanumeric()
+            || self.reader.peek() == '_'
+            || self.reader.peek().is_ascii_digit()
+        {
+            let _ = self.reader.advance();
+        }
+
+        self.make_token(TokenType::Identifier)
     }
 
     fn skip_whitespace(&mut self) {
