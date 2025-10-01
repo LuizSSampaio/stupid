@@ -155,7 +155,29 @@ impl Scanner {
             let _ = self.reader.advance();
         }
 
-        self.make_token(TokenType::Identifier)
+        let ident_type = self.identifier_type();
+        self.make_token(ident_type)
+    }
+
+    fn identifier_type(&mut self) -> TokenType {
+        match self.reader.lexeme().as_str() {
+            "and" => TokenType::And,
+            "class" => TokenType::Class,
+            "else" => TokenType::Else,
+            "false" => TokenType::False,
+            "for" => TokenType::For,
+            "fun" => TokenType::Fun,
+            "if" => TokenType::If,
+            "nil" => TokenType::Nil,
+            "or" => TokenType::Or,
+            "return" => TokenType::Return,
+            "super" => TokenType::Super,
+            "this" => TokenType::This,
+            "true" => TokenType::True,
+            "var" => TokenType::Var,
+            "while" => TokenType::While,
+            _ => TokenType::Identifier,
+        }
     }
 
     fn skip_whitespace(&mut self) {
