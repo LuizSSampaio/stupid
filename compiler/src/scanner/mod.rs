@@ -104,7 +104,7 @@ impl Scanner {
                 }
             }
             '"' => self.string(),
-            '0'..='9' => self.number(),
+            '0'..='9' => Ok(self.number()),
             _ => Err(ScanError::UnexpectedCharacter(
                 self.reader.peek(),
                 self.reader.row(),
@@ -130,7 +130,7 @@ impl Scanner {
         Ok(self.make_token(TokenType::String))
     }
 
-    fn number(&mut self) -> Result<Token, ScanError> {
+    fn number(&mut self) -> Token {
         while self.reader.peek().is_ascii_digit() {
             let _ = self.reader.advance();
         }
@@ -143,7 +143,7 @@ impl Scanner {
             }
         }
 
-        Ok(self.make_token(TokenType::Number))
+        self.make_token(TokenType::Number)
     }
 
     fn skip_whitespace(&mut self) {
