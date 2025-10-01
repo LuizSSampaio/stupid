@@ -1,5 +1,6 @@
 use std::{fs::File, io::Read, path::PathBuf};
 
+use bytecode::chunk::Chunk;
 use clap::Parser;
 
 use crate::scanner::Scanner;
@@ -33,13 +34,14 @@ fn run(path: PathBuf) {
         Err(why) => panic!("couldn't read {}: {}", display, why),
     }
 
-    match compile(content) {
+    let mut chunk = Chunk::default();
+    match compile(content, &mut chunk) {
         Ok(_) => {}
         Err(why) => panic!("couldn't compile {}: {}", display, why),
     }
 }
 
-fn compile(source: String) -> anyhow::Result<()> {
+fn compile(source: String, chunk: &mut Chunk) -> anyhow::Result<()> {
     let scanner = Scanner::new(source);
 
     Ok(())
