@@ -6,7 +6,7 @@ use crate::scanner::{
 };
 
 mod reader;
-mod token;
+pub mod token;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Scanner {
@@ -20,21 +20,7 @@ impl Scanner {
         }
     }
 
-    pub fn scan(&mut self) -> Result<Vec<Token>, ScanError> {
-        let mut tokens = Vec::new();
-
-        loop {
-            let token = self.scan_token()?;
-            tokens.push(token.clone());
-            if token.token_type == TokenType::Eof {
-                break;
-            }
-        }
-
-        Ok(tokens)
-    }
-
-    fn scan_token(&mut self) -> Result<Token, ScanError> {
+    pub fn scan_token(&mut self) -> Result<Token, ScanError> {
         self.skip_whitespace();
         self.reader.start_to_current();
 

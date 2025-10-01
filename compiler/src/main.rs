@@ -5,6 +5,7 @@ use clap::Parser;
 
 use crate::scanner::Scanner;
 
+mod parser;
 mod scanner;
 
 #[derive(Debug, Parser)]
