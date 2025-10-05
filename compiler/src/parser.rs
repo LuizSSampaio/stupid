@@ -32,6 +32,20 @@ impl Parser {
 
             break;
         }
+    }
 
+    pub fn consume(&mut self, expected: &Token) -> anyhow::Result<()> {
+        if self.current.token_type == expected.token_type {
+            self.advance();
+            Ok(())
+        } else {
+            Err(anyhow::anyhow!(
+                "Expected token {:?}, but found {:?} at row {}, column {}",
+                expected.token_type,
+                self.current.token_type,
+                self.current.row,
+                self.current.column
+            ))
+        }
     }
 }
