@@ -37,21 +37,20 @@ impl Parser {
         }
     }
 
-    pub fn consume(&mut self, expected: &Token) -> Result<(), ParserError> {
-        if self.current.token_type == expected.token_type {
+    pub fn consume(&mut self, expected: TokenType) -> Result<(), ParserError> {
+        if self.current.token_type == expected {
             self.advance();
-            Ok(())
-        } else {
-            Err(ParserError::UnexpectedToken(
-                expected.clone(),
-                self.current.clone(),
-            ))
+            return Ok(());
         }
+        Err(ParserError::UnexpectedToken(
+            expected,
+            self.current.token_type.clone(),
+        ))
     }
 }
 
 #[derive(Error, Debug)]
 pub enum ParserError {
-    #[error("Expected token '{0:?}', but found '{1:?}'")]
-    UnexpectedToken(Token, Token),
+    #[error("Expected token '{0}', but found '{1}'")]
+    UnexpectedToken(TokenType, TokenType),
 }
