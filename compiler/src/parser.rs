@@ -1,3 +1,5 @@
+use thiserror::Error;
+
 use crate::scanner::{Scanner, token::Token};
 
 pub struct Parser {
@@ -34,18 +36,21 @@ impl Parser {
         }
     }
 
-    pub fn consume(&mut self, expected: &Token) -> anyhow::Result<()> {
+    pub fn consume(&mut self, expected: &Token) -> Result<(), ParserError> {
         if self.current.token_type == expected.token_type {
             self.advance();
             Ok(())
         } else {
-            Err(anyhow::anyhow!(
-                "Expected token {:?}, but found {:?} at row {}, column {}",
-                expected.token_type,
-                self.current.token_type,
-                self.current.row,
-                self.current.column
+            Err(ParserError::UnexpectedToken(
+                expected.clone(),
+                self.current.clone(),
             ))
         }
     }
+}
+
+#[derive(Error, Debug)]
+pub enum ParserError {
+    #[error("Expected token '{0:?}', but found '{1:?}'")]
+    UnexpectedToken(Token, Token),
 }
