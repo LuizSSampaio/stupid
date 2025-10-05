@@ -17,4 +17,22 @@ impl Parser {
             current: first_token,
         }
     }
+
+    pub fn advance(&mut self) -> anyhow::Result<()> {
+        self.previous = self.current.clone();
+
+        loop {
+            self.current = match self.scanner.scan_token() {
+                Ok(token) => token,
+                Err(err) => {
+                    println!("Error: {}", err);
+                    continue;
+                }
+            };
+
+            break;
+        }
+
+        Ok(())
+    }
 }
