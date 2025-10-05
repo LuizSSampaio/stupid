@@ -18,7 +18,7 @@ impl Parser {
         }
     }
 
-    pub fn advance(&mut self) -> anyhow::Result<()> {
+    pub fn advance(&mut self) {
         self.previous = self.current.clone();
 
         loop {
@@ -33,6 +33,5 @@ impl Parser {
             break;
         }
 
-        Ok(())
     }
 }
