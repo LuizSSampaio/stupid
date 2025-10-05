@@ -1,6 +1,9 @@
 use thiserror::Error;
 
-use crate::scanner::{Scanner, token::Token};
+use crate::scanner::{
+    Scanner,
+    token::{Token, TokenType},
+};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Parser {
