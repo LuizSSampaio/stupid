@@ -11,6 +11,8 @@ pub struct Parser {
 
     previous: Token,
     current: Token,
+
+    had_error: bool,
 }
 
 impl Parser {
@@ -21,6 +23,7 @@ impl Parser {
             scanner,
             previous: first_token.clone(),
             current: first_token,
+            had_error: false,
         }
     }
 
@@ -31,6 +34,7 @@ impl Parser {
             self.current = match self.scanner.scan_token() {
                 Ok(token) => token,
                 Err(err) => {
+                    self.had_error = true;
                     println!("Error: {}", err);
                     continue;
                 }
@@ -49,6 +53,10 @@ impl Parser {
             expected,
             self.current.token_type.clone(),
         ))
+    }
+
+    pub fn had_error(&self) -> bool {
+        self.had_error
     }
 }
 
