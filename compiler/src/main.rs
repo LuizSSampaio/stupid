@@ -3,7 +3,7 @@ use std::{fs::File, io::Read, path::PathBuf};
 use bytecode::chunk::Chunk;
 use clap::Parser;
 
-use crate::scanner::Scanner;
+use crate::scanner::{Scanner, token::TokenType};
 
 mod parser;
 mod scanner;
@@ -44,6 +44,10 @@ fn run(path: PathBuf) {
 
 fn compile(source: String, chunk: &mut Chunk) -> anyhow::Result<()> {
     let scanner = Scanner::new(source);
+    let mut parser = parser::Parser::new(scanner);
+
+    parser.advance();
+    parser.consume(TokenType::Eof)?;
 
     Ok(())
 }
