@@ -49,5 +49,9 @@ fn compile(source: String, chunk: &mut Chunk) -> anyhow::Result<()> {
     parser.advance();
     parser.consume(TokenType::Eof)?;
 
+    if parser.had_error() {
+        anyhow::bail!("Parsing error");
+    }
+
     Ok(())
 }
