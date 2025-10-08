@@ -18,7 +18,7 @@ pub struct Core {
 }
 
 impl Core {
-    pub fn insterpret(&mut self, chunk: Chunk) -> Result<()> {
+    pub fn interpret(&mut self, chunk: Chunk) -> Result<()> {
         self.chunk = Some(chunk);
         self.counter = 0;
         self.stack = Stack::new();
@@ -27,53 +27,60 @@ impl Core {
     }
 
     fn run(&mut self) -> Result<()> {
-        while let Some(instruction) = self
-            .chunk
-            .as_ref()
-            .and_then(|chunk| chunk.get_code(self.counter))
-        {
-            let instruction = instruction?;
+        loop {
+            let instruction = self
+                .chunk
+                .as_ref()
+                .and_then(|chunk| chunk.get_code(self.counter))
+                .transpose()?;
 
             match instruction {
-                OpCode::Return => break,
-                OpCode::Constant => unimplemented!(),
-                OpCode::Negate => {
-                    let value = self.stack.pop()?;
-                    match value {
-                        Value::Number(n) => {
-                            self.stack.push(Value::Number(-n));
-                        }
-                        _ => return Err(CoreError::UnexpectedType(value.into()).into()),
-                    }
-                }
-                OpCode::Add => {
-                    let b: f64 = self.stack.pop()?.try_into()?;
-                    let a: f64 = self.stack.pop()?.try_into()?;
-                    self.stack.push((a + b).into())
-                }
-                OpCode::Subtract => {
-                    let b: f64 = self.stack.pop()?.try_into()?;
-                    let a: f64 = self.stack.pop()?.try_into()?;
-                    self.stack.push((a - b).into())
-                }
-                OpCode::Multiply => {
-                    let b: f64 = self.stack.pop()?.try_into()?;
-                    let a: f64 = self.stack.pop()?.try_into()?;
-                    self.stack.push((a * b).into())
-                }
-                OpCode::Divide => {
-                    let b: f64 = self.stack.pop()?.try_into()?;
-                    let a: f64 = self.stack.pop()?.try_into()?;
-                    self.stack.push((a / b).into())
-                }
-                _ => {
-                    return Err(CoreError::InvalidInstruction(instruction).into());
-                }
+                Some(OpCode::Return) => break,
+                Some(opcode) => self.execute_instruction(opcode)?,
+                None => break,
             }
 
             self.counter += 1;
         }
 
+        Ok(())
+    }
+
+    fn execute_instruction(&mut self, opcode: OpCode) -> Result<()> {
+        match opcode {
+            OpCode::Constant => self.execute_constant(),
+            OpCode::Negate => self.execute_negate(),
+            OpCode::Add => self.execute_binary_op(|a, b| a + b),
+            OpCode::Subtract => self.execute_binary_op(|a, b| a - b),
+            OpCode::Multiply => self.execute_binary_op(|a, b| a * b),
+            OpCode::Divide => self.execute_binary_op(|a, b| a / b),
+            OpCode::Return => unreachable!("Return should be handled in run loop"),
+        }
+    }
+
+    fn execute_constant(&mut self) -> Result<()> {
+        unimplemented!("Constant instruction not yet implemented")
+    }
+
+    fn execute_negate(&mut self) -> Result<()> {
+        let value = self.stack.pop()?;
+        match value {
+            Value::Number(n) => {
+                self.stack.push(Value::Number(-n));
+                Ok(())
+            }
+            _ => Err(CoreError::UnexpectedType(value.into()).into()),
+        }
+    }
+
+    fn execute_binary_op<F>(&mut self, op: F) -> Result<()>
+    where
+        F: Fn(f64, f64) -> f64,
+    {
+        let b: f64 = self.stack.pop()?.try_into()?;
+        let a: f64 = self.stack.pop()?.try_into()?;
+        let result = op(a, b);
+        self.stack.push(result.into());
         Ok(())
     }
 }
