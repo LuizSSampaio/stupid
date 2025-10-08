@@ -9,9 +9,6 @@ use thiserror::Error;
 
 use crate::memory::stack::Stack;
 
-mod binary;
-mod unary;
-
 #[derive(Debug, Default, Clone, PartialEq, PartialOrd)]
 pub struct Core {
     chunk: Option<Chunk>,
@@ -35,21 +32,40 @@ impl Core {
             .as_ref()
             .and_then(|chunk| chunk.get_code(self.counter))
         {
+            let instruction = instruction?;
+
             match instruction {
                 OpCode::Return => break,
-                OpCode::Constant(index) => {
-                    if let Some(constant) = self
-                        .chunk
-                        .as_ref()
-                        .and_then(|chunk| chunk.get_constant(index))
-                    {
-                        self.stack.push(constant);
-                    } else {
-                        return Err(CoreError::StackOverflow(instruction).into());
+                OpCode::Constant => unimplemented!(),
+                OpCode::Negate => {
+                    let value = self.stack.pop()?;
+                    match value {
+                        Value::Number(n) => {
+                            self.stack.push(Value::Number(-n));
+                        }
+                        _ => return Err(CoreError::UnexpectedType(value.into()).into()),
                     }
                 }
-                OpCode::Unary(unary) => self.unary(unary)?,
-                OpCode::Binary(binary) => self.binary(binary)?,
+                OpCode::Add => {
+                    let b: f64 = self.stack.pop()?.try_into()?;
+                    let a: f64 = self.stack.pop()?.try_into()?;
+                    self.stack.push((a + b).into())
+                }
+                OpCode::Subtract => {
+                    let b: f64 = self.stack.pop()?.try_into()?;
+                    let a: f64 = self.stack.pop()?.try_into()?;
+                    self.stack.push((a - b).into())
+                }
+                OpCode::Multiply => {
+                    let b: f64 = self.stack.pop()?.try_into()?;
+                    let a: f64 = self.stack.pop()?.try_into()?;
+                    self.stack.push((a * b).into())
+                }
+                OpCode::Divide => {
+                    let b: f64 = self.stack.pop()?.try_into()?;
+                    let a: f64 = self.stack.pop()?.try_into()?;
+                    self.stack.push((a / b).into())
+                }
                 _ => {
                     return Err(CoreError::InvalidInstruction(instruction).into());
                 }
